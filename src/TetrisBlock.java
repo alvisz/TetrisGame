@@ -1,122 +1,102 @@
-import javafx.scene.transform.Rotate;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class TetrisBlock {
-    Point[] blockCoordinates;
+    ArrayList<Point> points = new ArrayList<Point>();
     Color blockColor;
-    int rotation = 0;
+
+    final int startX = 120;
+    final int startY = 20;
+
+    int currentX = startX;
+    int currentY = startY;
 
 
-    private final Color[] blockColors = {Color.GREEN,Color.blue,Color.RED,Color.ORANGE,Color.CYAN};
-    public final Point[][][] tetrisBlockTypes = {
+
+    private final Color[] blockColors = {Color.GREEN,Color.BLUE,Color.RED,Color.ORANGE,Color.CYAN, Color.MAGENTA, Color.YELLOW};
+    private final Point[][] tetrisBlockTypes = {
             // I-Piece
-            {
                     { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3) }
-            },
-
             // J-Piece
-            {
                     { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 0) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 0) }
-            },
-
             // L-Piece
-            {
                     { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 0) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 0) }
-            },
-
             // O-Piece
-            {
                     { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) }
-            },
-
             // S-Piece
-            {
                     { new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) },
-                    { new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) }
-            },
-
             // T-Piece
-            {
                     { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(1, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(2, 1), new Point(1, 2) }
-            },
-
             // Z-Piece
-            {
-                    { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2) },
-                    { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2) }
-            }
+                    { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) }
     };
 
     TetrisBlock(){
-        getRandomNumber();
-    }
-
-
-    public void TetrisBlocks(Graphics g){
-        g.setColor(Color.RED);
-        for (Point p : tetrisBlockTypes[0][2]) {
-            g.fillRect((p.x + 10) * 10,
-                    (p.y + 10) * 10,
-                    10, 10);
-        }
-    }
-
-    private int getRandomNumber(){
         Random rnd = new Random();
         int i = rnd.nextInt(7);
-        System.out.println(i);
-        return i;
+        for(Point p: tetrisBlockTypes[i]){
+            p.x = p.x*10+startX;
+            p.y = p.y*10+startY;
+            points.add(p);
+        }
+        this.blockColor = blockColors[i];
     }
 
-    void drawBlocks(){
-        System.out.println(tetrisBlockTypes[0][0][0]);
-    }
 
-    protected void getRandomBlock(){
-        int option = 1;
-        Point[] shape = new Point[4];
+    /*public void TetrisBlocks(Graphics g){
+        g.setColor(Color.RED);
+        for (Point p : tetrisBlockTypes[0]) {
+            System.out.println("X:"+(p.x + 10) * 10);
+            System.out.println("Y:"+(p.y + 10) * 10);
+            g.fillRect(p.x * 10+actualX, p.y * 10+actualY, 10, 10);
+        }
+    }*/
 
-        switch(option){
-            case 1:
 
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                break;
+    protected void moveDown(){
+        this.currentY+=10;
+        for (Point p: this.points){
+            p.y +=10;
+
         }
     }
+
+    protected void moveRight(){
+        this.currentX+=10;
+        for (Point p: this.points){
+            p.x +=10;
+        }
+    }
+
+    protected void moveLeft(){
+        this.currentX+=10;
+        for (Point p: this.points){
+            p.x -=10;
+        }
+    }
+
+    protected ArrayList<Point> getPoints(){
+        return this.points;
+    }
+    protected Color getColor(){
+        return this.blockColor;
+    }
+    protected void rotatePoints() {
+        int a = (int)Math.toRadians((90));
+        for (Point p : this.points){
+            p.x -= currentX;
+            p.y -=currentY;
+            int newx = p.y;
+            int newy = -p.x;
+            p.x = newx+currentX;
+            p.y = newy+currentY;
+
+
+        }
+    }
+
 }
 
 // http://www.cs.rpi.edu/academics/courses/fall15/csci1200/hw/03_dynamic_tetris_arrays/hw.pdf

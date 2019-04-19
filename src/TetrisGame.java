@@ -7,28 +7,14 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class TetrisGame extends JPanel implements KeyListener, ActionListener {
-    /*
-    Esmu izveidojis nelielu pamatu tetrim. Pagaidām nekas īpašs. Konsoles izvades ir priekš testēšanas.
-    TODO 1.Atradu tetra formu koordinātes, no kurām veidošu pašas formas, pēctam, kad forma parādīsies, viņas likšu iekšā ArrayListā.
-    TODO 2.Izveidošu collisions funkciju, kas apstādinās krišanu, kad zem kādas no formas daļas būs citas formas daļa
-    TODO 3. Tā, kā ņēmu koordinātes no jau gatava tetra projekta un tur jau ir sarotētas visas formas,
-        izveidot funkciju, kas šīs koordinātes izrotē, nevis paņem no jau gatava saraksta, lai būtu nedaudz advanced.
-        būtu labi, ja jūs komentāros "pasviestu" ideju, kā to vieglāk izdarīt.
-    TODO 4. Ir doma uztaisīt tā, ka tad, kad notīrās līnija, kas nav pašā apakšā, citi gabaliņi, kuriem pazuda pamats
-         sāk lēnām krist.
-    TODO 5. Varbūt kādi skaņas efekti un epilepsiju izraisošas krāsu maiņas, kad notīras līnija, lai spēle neliktos parāk basic?
-    */
-    /* Viens formas kvadrāts ir 10x10px. Neliku neko lielāku, lai nebūtu problēmas savādākas izšķirtspējas datoriem, un negribas čakarēties ar responsiveness.
-     *2.mājasdarbu neiesniedzu, jo jau iepriekš e-pastā sarunājām par tetri. Neuzskatu, ka man sanāks kaut kas baigi kruts, bet cerams labāk par brick breaker būs :D
-     **/
-
     private int score = 0;
-
     private int xPos = 0;
     private int yPos = 0;
-
     private final int width;
     private final int height;
+
+    ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
+    TetrisBlock currentBlock;
 
 
     JLabel scoreText = new JLabel(Integer.toString(score));
@@ -61,18 +47,28 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
 
         g.setColor(Color.GREEN);
         g.fillRect(xPos,yPos, 10,10);
-        new TetrisBlock().drawBlocks();
+
+        drawArray(g);
         //grid
+
+        System.out.println("X: "+xPos+" Y: "+ yPos);
+
+        //new TetrisBlock().TetrisBlocks(g);
+
+        new TetrisBlock();
         g.setColor(Color.black);
         for ( int x = 50; x <= 240; x += 10 )
             for ( int y = 100; y <= 380; y += 10 )
                 g.drawRect( x, y, 10, 10 );
+    }
 
-        System.out.println("X: "+xPos+" Y: "+ yPos);
-
-        new TetrisBlock().TetrisBlocks(g);
-
-        new TetrisBlock();
+    private void drawArray(Graphics g){
+        for (TetrisBlock t: blocks){
+            g.setColor(t.getColor());
+            for (Point p :t.getPoints()) {
+                g.fillRect(p.x , p.y, 10, 10);
+            }
+        }
     }
 
 
@@ -85,34 +81,27 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         int keyCode = e.getKeyCode();
         switch( keyCode ) {
             case KeyEvent.VK_UP:
-                yPos-=10;
-                System.out.println("Up");
                 repaint();
                 break;
             case KeyEvent.VK_DOWN:
-                yPos+=10;
-                System.out.println("Down");
-                if (yPos == 380){
-                    yPos = 40;
-                    xPos = 150;
-                    score+=1;
-                }
+                this.currentBlock.moveDown();
                 repaint();
                 break;
             case KeyEvent.VK_LEFT:
-                if (xPos == 50){
-                    break;
-                }
-                xPos-=10;
-                System.out.println("Left");
+                this.currentBlock.moveLeft();
                 repaint();
                 break;
             case KeyEvent.VK_RIGHT :
-                if (xPos == 240){
-                    break;
-                }
-                xPos+=10;
-                System.out.println("Right");
+                this.currentBlock.moveRight();
+                repaint();
+                break;
+            case KeyEvent.VK_SPACE :
+                this.currentBlock = new TetrisBlock();
+                this.blocks.add(currentBlock);
+                repaint();
+                break;
+            case KeyEvent.VK_ENTER :
+                this.currentBlock.rotatePoints();
                 repaint();
                 break;
         }
