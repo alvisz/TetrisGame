@@ -2,12 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5567b4a5-d730-404e-ac57-4d984f440d67" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Tetris/Tetris.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Tetris/Tetris.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Tetris/TetrisBlock.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Tetris/TetrisGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Tetris/TetrisGame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TetrisBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TetrisBlock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TetrisGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TetrisGame.java" afterDir="false" />
     </list>
@@ -36,11 +30,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TetrisGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="103" column="49" selection-start-line="103" selection-start-column="49" selection-end-line="103" selection-end-column="49" />
+            <state relative-caret-position="113">
+              <caret line="144" column="25" selection-start-line="144" selection-start-column="25" selection-end-line="144" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#591#604#0" expanded="true" />
@@ -49,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TetrisBlock.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="93" column="32" selection-start-line="93" selection-start-column="32" selection-end-line="93" selection-end-column="32" />
+            <state relative-caret-position="423">
+              <caret line="98" column="26" selection-start-line="98" selection-start-column="26" selection-end-line="98" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#143#150#0" expanded="true" />
@@ -61,6 +55,8 @@
                 <element signature="e#2735#2736#0" expanded="true" />
                 <element signature="e#2767#2768#0" expanded="true" />
                 <element signature="e#2805#2806#0" expanded="true" />
+                <element signature="e#2811#2812#0" expanded="true" />
+                <element signature="e#2861#2862#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,8 +90,8 @@
         <option value="$PROJECT_DIR$/src/Tetris.java" />
         <option value="$PROJECT_DIR$/src/BloackShape.java" />
         <option value="$PROJECT_DIR$/src/BlockShape.java" />
-        <option value="$PROJECT_DIR$/src/TetrisGame.java" />
         <option value="$PROJECT_DIR$/src/TetrisBlock.java" />
+        <option value="$PROJECT_DIR$/src/TetrisGame.java" />
       </list>
     </option>
   </component>
@@ -198,12 +194,12 @@
       <workItem from="1555352969301" duration="5910000" />
       <workItem from="1555524492647" duration="6294000" />
       <workItem from="1555623988921" duration="595000" />
-      <workItem from="1555672404474" duration="15935000" />
+      <workItem from="1555672404474" duration="22283000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70090000" />
+    <option name="totallyTimeSpent" value="76438000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -267,6 +263,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.desktop/javax/swing/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="557" column="17" selection-start-line="557" selection-start-column="17" selection-end-line="557" selection-end-column="17" />
+          <folding>
+            <element signature="e#17754#17755#0" expanded="true" />
+            <element signature="e#17816#17817#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Tetris.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
@@ -277,21 +284,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TetrisGame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="103" column="49" selection-start-line="103" selection-start-column="49" selection-end-line="103" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#591#604#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/TetrisBlock.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="93" column="32" selection-start-line="93" selection-start-column="32" selection-end-line="93" selection-end-column="32" />
+        <state relative-caret-position="423">
+          <caret line="98" column="26" selection-start-line="98" selection-start-column="26" selection-end-line="98" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#143#150#0" expanded="true" />
@@ -299,6 +295,19 @@
             <element signature="e#2735#2736#0" expanded="true" />
             <element signature="e#2767#2768#0" expanded="true" />
             <element signature="e#2805#2806#0" expanded="true" />
+            <element signature="e#2811#2812#0" expanded="true" />
+            <element signature="e#2861#2862#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TetrisGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="144" column="25" selection-start-line="144" selection-start-column="25" selection-end-line="144" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#591#604#0" expanded="true" />
           </folding>
         </state>
       </provider>

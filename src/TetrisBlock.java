@@ -96,7 +96,8 @@ public class TetrisBlock {
 
         }
     }
+    protected void removeBlock(int x, int y){
+        this.points.remove(new Point(x,y));
+    }
 
 }
-
-// http://www.cs.rpi.edu/academics/courses/fall15/csci1200/hw/03_dynamic_tetris_arrays/hw.pdf

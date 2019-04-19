@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimerTask;
 
 public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     private int score = 0;
@@ -13,18 +15,34 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     private final int width;
     private final int height;
 
+    boolean isRunning = false;
+
     ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
     TetrisBlock currentBlock;
-
-
     JLabel scoreText = new JLabel(Integer.toString(score));
+
+    Timer time = new Timer(1000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            goDown();
+            repaint();
+        }
+    });
+
     public TetrisGame(int width, int height){
         this.width = width;
         this.height = height;
         setSize(width,height);
         setFocusable(true);
         addKeyListener(this);
+    }
 
+    private void start(){
+        isRunning = true;
+        repaint();
+        this.currentBlock = new TetrisBlock();
+        this.blocks.add(currentBlock);
+        time.start();
     }
     @Override
     public void paint(Graphics g) {
@@ -42,20 +60,17 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         g.fillRect(250,100,10,300);
 
         g.setColor(Color.GREEN);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 50));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 25));
         g.drawString("Score: ".concat(Integer.toString(score)),300,260);
 
-        g.setColor(Color.GREEN);
-        g.fillRect(xPos,yPos, 10,10);
+        if (isRunning == false){
+            g.setFont(new Font("SansSerif", Font.PLAIN, 40));
+            g.drawString("Spied \"P\", lai sāktu spēli",350,150);
+        }
 
         drawArray(g);
         //grid
 
-        System.out.println("X: "+xPos+" Y: "+ yPos);
-
-        //new TetrisBlock().TetrisBlocks(g);
-
-        new TetrisBlock();
         g.setColor(Color.black);
         for ( int x = 50; x <= 240; x += 10 )
             for ( int y = 100; y <= 380; y += 10 )
@@ -71,6 +86,50 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         }
     }
 
+    private void clearLine(int lineY){
+        for (int i = 50;i<250;i+=10){
+            for (TetrisBlock t: blocks){
+                t.removeBlock(i,lineY);
+            }
+        }
+        for (TetrisBlock t: blocks){
+            for (Point pp: t.getPoints()){
+                if (pp.y<lineY){
+                    pp.y+=10;
+                }
+            }
+        }
+        score+=1;
+    }
+
+    private boolean checkIfUnder(){
+        for (Point p: currentBlock.getPoints()){
+            int targetY = p.y+10;
+            int targetX = p.x;
+            if (p.y == 380){
+                return true;
+            }
+            for (TetrisBlock t: blocks){
+                if (t == currentBlock){
+                    continue;
+                }
+                for (Point pp: t.getPoints()){
+                    if (pp.y == targetY && pp.x == targetX) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void goDown(){
+        if (checkIfUnder()){
+            this.currentBlock = new TetrisBlock();
+            this.blocks.add(currentBlock);
+        } else currentBlock.moveDown();
+    }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -84,7 +143,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_DOWN:
-                this.currentBlock.moveDown();
+                goDown();
                 repaint();
                 break;
             case KeyEvent.VK_LEFT:
@@ -96,14 +155,18 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_SPACE :
-                this.currentBlock = new TetrisBlock();
-                this.blocks.add(currentBlock);
-                repaint();
                 break;
             case KeyEvent.VK_ENTER :
                 this.currentBlock.rotatePoints();
                 repaint();
                 break;
+            case KeyEvent.VK_P :
+                start();
+                break;
+            case KeyEvent.VK_C :
+                clearLine(380);
+                break;
+
         }
     }
 
