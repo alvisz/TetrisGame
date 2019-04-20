@@ -102,6 +102,31 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         score+=1;
     }
 
+    private void scanForFullLine(){
+        for (int y=380;y>90;y-=10){
+            int count = 0;
+            for (int x = 50;x<=240;x+=10){
+                if (findInBlocksList(x,y)){
+                    System.out.println("Atrada, Y:"+y);
+                    count+=1;
+                    System.out.println("CountAtY:"+y+", Count:"+count);
+                }
+                if (count == 20){
+                    clearLine(y);
+                }
+            }
+        }
+    }
+
+    private boolean findInBlocksList(int x, int y){
+        for (TetrisBlock tt: blocks){
+            if (tt.getPoints().contains(new Point(x,y))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean checkIfUnder(){
         for (Point p: currentBlock.getPoints()){
             int targetY = p.y+10;
@@ -125,6 +150,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
 
     private void goDown(){
         if (checkIfUnder()){
+            scanForFullLine();
             this.currentBlock = new TetrisBlock();
             this.blocks.add(currentBlock);
         } else currentBlock.moveDown();
