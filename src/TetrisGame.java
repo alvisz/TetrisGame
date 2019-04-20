@@ -5,32 +5,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimerTask;
 
 public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     private int score = 0;
-
     private final int width;
     private final int height;
 
     int bgX = 0,bgX1 = 0,bgX2 = 0, bgX3 = 0;
-
-    boolean isRunning = false;
-    boolean launchedBG = false;
-
     Image img,img2,img3,img4,img5;
+    Font font;
+
+    //gameStates
+    boolean isRunning = false;
+    boolean gameOver = false;
 
     ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
     TetrisBlock currentBlock;
     JLabel scoreText = new JLabel(Integer.toString(score));
 
-    Timer time = new Timer(1000, new ActionListener() {
+    Timer gameplay = new Timer(1000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             goDown();
@@ -47,21 +43,31 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             repaint();
         }
     });
+    boolean textOn = true;
+    Timer textBlink = new Timer(500, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            textOn = !textOn;
+        }
+    });
 
-    private void getBgImages(){
+    private void getAssets(){
         try {
+            InputStream is = TetrisGame.class.getResourceAsStream("assets/m6x11.ttf");
+            font = Font.createFont(Font.TRUETYPE_FONT, is);
             img = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-bg.png"));
             img2 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-montain-far.png"));
             img3 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-mountains.png"));
             img4 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-trees.png"));
             img5 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-foreground-trees.png"));
-        } catch (IOException e){
+        } catch (IOException|FontFormatException e){
             e.printStackTrace();
         }
     }
 
 
     public TetrisGame(int width, int height){
+        this.getAssets();
         this.width = width;
         this.height = height;
         setSize(width,height);
@@ -69,60 +75,76 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         addKeyListener(this);
         setOpaque(false);
         BGtime.start();
-        this.getBgImages();
     }
 
     private void start(){
         isRunning = true;
+        textBlink.stop();
+        if (gameOver){
+            score = 0;
+            blocks.clear();
+            this.currentBlock = null;
+            gameOver = false;
+        }
         repaint();
         this.currentBlock = new TetrisBlock();
         this.blocks.add(currentBlock);
-        time.start();
+        gameplay.start();
+
     }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        background(g);
-        // background
-//        g.setColor(Color.LIGHT_GRAY);
-//        g.fillRect(0,0,width,height);
-        //bottom
-        g.setColor(Color.GRAY);
-        g.fillRect(50,390,200,10);
+        this.background(g);
+        g.setColor(new Color(255,255,255,100));
+        g.fillRect(50,630,360,10);
         //left wall
-        g.fillRect(40,100,10,300);
+        g.fillRect(40,120,10,520);
         //right wall
-        g.fillRect(250,100,10,300);
+        g.fillRect(410,120,10,520);
 
         g.setColor(Color.GREEN);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 25));
-        g.drawString("Score: ".concat(Integer.toString(score)),300,260);
+        g.setFont(getFont(40));
+        if (!gameOver) g.drawString("Score: ".concat(Integer.toString(score)),700,260);
+        g.setColor(new Color(255,255,255,100));
+        g.fillRect(460,120 ,100,520);
 
-        if (isRunning == false){
-            g.setFont(new Font("SansSerif", Font.PLAIN, 40));
-            g.drawString("Spied \"P\", lai sāktu spēli",350,150);
+        if (!isRunning){
+            g.setColor(Color.GREEN);
+            g.setFont(getFont(40));
+            g.drawString("Press \"P\" to play",700,350);
         }
 
+        if (gameOver){
+            textBlink.start();
+            g.setColor(Color.RED);
+            g.setFont(getFont(60));
+            g.drawString("You lost!",700,350);
+            g.drawString("Your score was: "+score,700,420);
+            if (textOn){
+                g.drawString("Press \"P\" to play",700,490);
+            }
+
+        }
         drawArray(g);
         //grid
-
         g.setColor(Color.black);
-        for ( int x = 50; x <= 240; x += 10 )
-            for ( int y = 100; y <= 380; y += 10 )
-                g.drawRect( x, y, 10, 10 );
+        for ( int x = 50; x <= 400; x += 30 )
+            for ( int y = 120; y <= 620; y += 30 )
+                g.drawRect( x, y, 30, 30 );
     }
 
     private void drawArray(Graphics g){
         for (TetrisBlock t: blocks){
             g.setColor(t.getColor());
             for (Point p :t.getPoints()) {
-                g.fillRect(p.x , p.y, 10, 10);
+                g.fillRect(p.x , p.y, 30, 30);
             }
         }
     }
 
     private void clearLine(int lineY){
-        for (int i = 50;i<250;i+=10){
+        for (int i = 50;i<400;i+=30){
             for (TetrisBlock t: blocks){
                 t.removeBlock(i,lineY);
             }
@@ -130,7 +152,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         for (TetrisBlock t: blocks){
             for (Point pp: t.getPoints()){
                 if (pp.y<lineY){
-                    pp.y+=10;
+                    pp.y+=30;
                 }
             }
         }
@@ -138,16 +160,20 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private void scanForFullLine(){
-        for (int y=380;y>90;y-=10){
+        for (int y=600;y>=90;y-=30){
             int count = 0;
-            for (int x = 50;x<=240;x+=10){
+            for (int x = 50;x<=400;x+=30){
                 if (findInBlocksList(x,y)){
                     System.out.println("Atrada, Y:"+y);
                     count+=1;
                     System.out.println("CountAtY:"+y+", Count:"+count);
+                    if (y==90){
+                        gameOver = true;
+                    }
                 }
-                if (count == 20){
+                if (count == 12){
                     clearLine(y);
+                    scanForFullLine();
                 }
             }
         }
@@ -164,9 +190,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
 
     private boolean checkIfUnder(){
         for (Point p: currentBlock.getPoints()){
-            int targetY = p.y+10;
+            int targetY = p.y+30;
             int targetX = p.x;
-            if (p.y == 380){
+            if (p.y == 600){
                 return true;
             }
             for (TetrisBlock t: blocks){
@@ -183,11 +209,42 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         return false;
     }
 
+    private boolean allowedToMoveHorizontal(TetrisBlock block, boolean side){
+        // If side is TRUE, checks for right side else for left
+        for (Point p: block.getPoints()){
+            if (side){
+                if (p.getX()+30>400) return false;
+            } else {
+                if (p.getX()-30<50) return false;
+            }
+            for (TetrisBlock pp: blocks){
+                if (pp != block){
+                    for (Point ppp: pp.getPoints()){
+                        if (p.getY() == ppp.getY()){
+                            if (side){
+                                if (p.getX()+30 == ppp.getX()){
+                                    return false;
+                                }
+                            } else {
+                                if (p.getX()-30 == ppp.getX()){
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     private void goDown(){
         if (checkIfUnder()){
             scanForFullLine();
-            this.currentBlock = new TetrisBlock();
-            this.blocks.add(currentBlock);
+            if (!gameOver){
+                this.currentBlock = new TetrisBlock();
+                this.blocks.add(currentBlock);
+            } else gameplay.stop();
         } else currentBlock.moveDown();
     }
 
@@ -208,17 +265,23 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_LEFT:
-                this.currentBlock.moveLeft();
+                if (allowedToMoveHorizontal(currentBlock,false)){
+                    this.currentBlock.moveLeft();
+                }
                 repaint();
                 break;
             case KeyEvent.VK_RIGHT :
-                this.currentBlock.moveRight();
+                if (allowedToMoveHorizontal(currentBlock, true)){
+                    this.currentBlock.moveRight();
+                }
                 repaint();
                 break;
             case KeyEvent.VK_SPACE :
                 break;
             case KeyEvent.VK_ENTER :
-                this.currentBlock.rotatePoints();
+                if (allowedToMoveHorizontal(currentBlock,true) && allowedToMoveHorizontal(currentBlock,false)) {
+                    this.currentBlock.rotatePoints();
+                }
                 repaint();
                 break;
             case KeyEvent.VK_P :
@@ -258,17 +321,26 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 this.bgX2 = 0;
             }
             g.drawImage(img4, bgX2,0,1280,720,null);
-            System.out.println(bgX2);
             g.drawImage(img4,bgX2+1280,0,1280,720,null);
             if (this.bgX3 <= -1280){
                 this.bgX3 = 0;
             }
             g.drawImage(img5,bgX3,0,1280,720,null);
-        System.out.println("X3:"+bgX3);
             g.drawImage(img5,bgX3+1280,0,1280,720,null);
 
 
     }
+
+    public static Font getFont(int size) {
+        try {
+            Font font = Font.createFont(Font.TRUETYPE_FONT, TetrisGame.class.getResourceAsStream("assets/m6x11.ttf"));
+            font = font.deriveFont(Font.PLAIN, size);
+            return font;
+        } catch (Exception ex) {
+        }
+        return new Font("SansSerif", Font.PLAIN, size);
+    }
+
 
 
 }

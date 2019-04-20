@@ -7,8 +7,8 @@ public class TetrisBlock {
     ArrayList<Point> points = new ArrayList<Point>();
     Color blockColor;
 
-    final int startX = 120;
-    final int startY = 20;
+    final int startX = 110;
+    final int startY = 30;
 
     int currentX = startX;
     int currentY = startY;
@@ -37,8 +37,8 @@ public class TetrisBlock {
         Random rnd = new Random();
         int i = rnd.nextInt(7);
         for(Point p: tetrisBlockTypes[i]){
-            p.x = p.x*10+startX;
-            p.y = p.y*10+startY;
+            p.x = p.x*30+startX;
+            p.y = p.y*30+startY;
             points.add(p);
         }
         this.blockColor = blockColors[i];
@@ -56,24 +56,24 @@ public class TetrisBlock {
 
 
     protected void moveDown(){
-        this.currentY+=10;
+        this.currentY+=30;
         for (Point p: this.points){
-            p.y +=10;
-
+            p.y +=30;
         }
+        System.out.println("currX: "+currentX+" currY: "+currentY);
     }
 
     protected void moveRight(){
-        this.currentX+=10;
+        this.currentX+=30;
         for (Point p: this.points){
-            p.x +=10;
+            p.x +=30;
         }
     }
 
     protected void moveLeft(){
-        this.currentX+=10;
+        this.currentX-=30;
         for (Point p: this.points){
-            p.x -=10;
+            p.x -=30;
         }
     }
 
@@ -84,16 +84,13 @@ public class TetrisBlock {
         return this.blockColor;
     }
     protected void rotatePoints() {
-        int a = (int)Math.toRadians((90));
         for (Point p : this.points){
             p.x -= currentX;
             p.y -=currentY;
             int newx = p.y;
             int newy = -p.x;
             p.x = newx+currentX;
-            p.y = newy+currentY;
-
-
+            p.y = newy+currentY+90;
         }
     }
     protected void removeBlock(int x, int y){
