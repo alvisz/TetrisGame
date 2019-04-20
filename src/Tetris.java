@@ -4,9 +4,8 @@ import java.awt.*;
 public class Tetris extends JFrame{
     static GraphicsConfiguration graphics;
 
-    private final int SCALE = 3;
-    private final int width = 320*SCALE;
-    private final int height = 240*SCALE;
+    private final int width = 1280;
+    private final int height = 720;
 
     public Tetris(){
         TetrisGame tetris = new TetrisGame(width,height);
@@ -20,5 +19,9 @@ public class Tetris extends JFrame{
     public static void main(String[] args){
         System.out.println("Game starts");
         new Tetris();
+    }
+
+    public void background(){
+
     }
 }

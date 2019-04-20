@@ -1,21 +1,30 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
 
 public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     private int score = 0;
-    private int xPos = 0;
-    private int yPos = 0;
+
     private final int width;
     private final int height;
 
+    int bgX = 0,bgX1 = 0,bgX2 = 0, bgX3 = 0;
+
     boolean isRunning = false;
+    boolean launchedBG = false;
+
+    Image img,img2,img3,img4,img5;
 
     ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
     TetrisBlock currentBlock;
@@ -25,9 +34,32 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             goDown();
+        }
+    });
+
+    Timer BGtime = new Timer(41, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bgX -=1;
+            bgX1 -=2;
+            bgX2 -=3;
+            bgX3 -=4;
             repaint();
         }
     });
+
+    private void getBgImages(){
+        try {
+            img = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-bg.png"));
+            img2 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-montain-far.png"));
+            img3 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-mountains.png"));
+            img4 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-trees.png"));
+            img5 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-foreground-trees.png"));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public TetrisGame(int width, int height){
         this.width = width;
@@ -35,6 +67,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         setSize(width,height);
         setFocusable(true);
         addKeyListener(this);
+        setOpaque(false);
+        BGtime.start();
+        this.getBgImages();
     }
 
     private void start(){
@@ -47,10 +82,10 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        background(g);
         // background
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0,0,width,height);
-
+//        g.setColor(Color.LIGHT_GRAY);
+//        g.fillRect(0,0,width,height);
         //bottom
         g.setColor(Color.GRAY);
         g.fillRect(50,390,200,10);
@@ -205,4 +240,35 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
 
     }
+
+    private void background(Graphics g){
+
+            g.drawImage(img,0,0,1280,720,null);
+            if (this.bgX <= -1280){
+                this.bgX = 0;
+            }
+            g.drawImage(img2,bgX,0,1280,720,null);
+            g.drawImage(img2,bgX+1280,0,1280,720,null);
+            if (this.bgX1 <= -1280){
+                this.bgX1 = 0;
+            }
+            g.drawImage(img3,bgX1,0,1280,720,null);
+            g.drawImage(img3,bgX1+1280,0,1280,720,null);
+            if (this.bgX2 <= -1280){
+                this.bgX2 = 0;
+            }
+            g.drawImage(img4, bgX2,0,1280,720,null);
+            System.out.println(bgX2);
+            g.drawImage(img4,bgX2+1280,0,1280,720,null);
+            if (this.bgX3 <= -1280){
+                this.bgX3 = 0;
+            }
+            g.drawImage(img5,bgX3,0,1280,720,null);
+        System.out.println("X3:"+bgX3);
+            g.drawImage(img5,bgX3+1280,0,1280,720,null);
+
+
+    }
+
+
 }
