@@ -22,7 +22,11 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     boolean isRunning = false;
     boolean gameOver = false;
 
+    boolean allowedToGoDown = true;
+
+
     ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
+    ArrayList<TetrisBlock> queueBlocks = new ArrayList<TetrisBlock>();
     TetrisBlock currentBlock;
     JLabel scoreText = new JLabel(Integer.toString(score));
 
@@ -32,8 +36,8 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             goDown();
         }
     });
-
-    Timer BGtime = new Timer(41, new ActionListener() {
+    // BG time laiks bija 41ms, bet baigi lago, tapec 100 :D
+    Timer BGtime = new Timer(100, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             bgX -=1;
@@ -78,6 +82,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private void start(){
+        queueBlocks.clear();
         isRunning = true;
         textBlink.stop();
         if (gameOver){
@@ -87,6 +92,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             gameOver = false;
         }
         repaint();
+        fillTheQueue();
         this.currentBlock = new TetrisBlock();
         this.blocks.add(currentBlock);
         gameplay.start();
@@ -98,21 +104,26 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         this.background(g);
         g.setColor(new Color(255,255,255,100));
         g.fillRect(50,630,360,10);
-        //left wall
+        // left wall
         g.fillRect(40,120,10,520);
-        //right wall
+        // right wall
         g.fillRect(410,120,10,520);
+        // queue block
+        g.fillRect(460,120 ,getMaxQueueX()-460,520);
+
 
         g.setColor(Color.GREEN);
         g.setFont(getFont(40));
-        if (!gameOver) g.drawString("Score: ".concat(Integer.toString(score)),700,260);
-        g.setColor(new Color(255,255,255,100));
-        g.fillRect(460,120 ,100,520);
+        if (!gameOver && isRunning) g.drawString("Score: ".concat(Integer.toString(score)),700,260);
 
         if (!isRunning){
             g.setColor(Color.GREEN);
             g.setFont(getFont(40));
             g.drawString("Press \"P\" to play",700,350);
+        } else {
+            g.setColor(new Color(255,255,255,200));
+            g.setFont(getFont(40));
+            g.drawString("Queue: ",480,160);
         }
 
         if (gameOver){
@@ -126,7 +137,8 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             }
 
         }
-        drawArray(g);
+        drawArray(g, blocks);
+        drawArray(g, queueBlocks);
         //grid
         g.setColor(Color.black);
         for ( int x = 50; x <= 400; x += 30 )
@@ -134,8 +146,8 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 g.drawRect( x, y, 30, 30 );
     }
 
-    private void drawArray(Graphics g){
-        for (TetrisBlock t: blocks){
+    private void drawArray(Graphics g, ArrayList<TetrisBlock> list){
+        for (TetrisBlock t: list){
             g.setColor(t.getColor());
             for (Point p :t.getPoints()) {
                 g.fillRect(p.x , p.y, 30, 30);
@@ -164,9 +176,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             int count = 0;
             for (int x = 50;x<=400;x+=30){
                 if (findInBlocksList(x,y)){
-                    System.out.println("Atrada, Y:"+y);
                     count+=1;
-                    System.out.println("CountAtY:"+y+", Count:"+count);
                     if (y==90){
                         gameOver = true;
                     }
@@ -239,13 +249,15 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private void goDown(){
-        if (checkIfUnder()){
-            scanForFullLine();
-            if (!gameOver){
-                this.currentBlock = new TetrisBlock();
-                this.blocks.add(currentBlock);
-            } else gameplay.stop();
-        } else currentBlock.moveDown();
+        if (allowedToGoDown){
+            if (checkIfUnder()){
+                scanForFullLine();
+                if (!gameOver){
+                    Thread t = new Thread(moveFromQueue);
+                    t.start();
+                } else gameplay.stop();
+            } else currentBlock.moveDown(30);
+        }
     }
 
 
@@ -266,13 +278,13 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 break;
             case KeyEvent.VK_LEFT:
                 if (allowedToMoveHorizontal(currentBlock,false)){
-                    this.currentBlock.moveLeft();
+                    this.currentBlock.moveLeft(30);
                 }
                 repaint();
                 break;
             case KeyEvent.VK_RIGHT :
                 if (allowedToMoveHorizontal(currentBlock, true)){
-                    this.currentBlock.moveRight();
+                    this.currentBlock.moveRight(30);
                 }
                 repaint();
                 break;
@@ -285,10 +297,14 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_P :
-                start();
+                if (!isRunning || gameOver){
+                    start();
+                }
                 break;
             case KeyEvent.VK_C :
-                clearLine(380);
+                Thread t = new Thread(moveFromQueue);
+                t.start();
+                repaint();
                 break;
 
         }
@@ -340,6 +356,60 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         }
         return new Font("SansSerif", Font.PLAIN, size);
     }
+
+    public void fillTheQueue(){
+        if (!queueBlocks.contains(new TetrisBlock(490,200))){
+            queueBlocks.add(new TetrisBlock(490,200));
+        }
+        if (!queueBlocks.contains(new TetrisBlock(490,300))){
+            queueBlocks.add(new TetrisBlock(490,300));
+        }
+        if (!queueBlocks.contains(new TetrisBlock(490,400))){
+            queueBlocks.add(new TetrisBlock(490,400));
+        }
+        if (!queueBlocks.contains(new TetrisBlock(490,500))){
+            queueBlocks.add(new TetrisBlock(490,500));
+        }
+    }
+
+    public int getMaxQueueX(){
+        int max = 0;
+        for (TetrisBlock block: queueBlocks){
+            for (Point p: block.getPoints()){
+                if (p.x>max){
+                    max = p.x;
+                }
+            }
+        }
+        return max+60;
+    }
+
+    Runnable moveFromQueue = new Runnable() {
+        public void run() {
+            allowedToGoDown = false;
+            gameplay.stop();
+            TetrisBlock block = queueBlocks.get(0);
+            block.moveUpAnimated(30);
+            block.moveLeftAnimated(200);
+            queueBlocks.remove(block);
+            currentBlock = block;
+            blocks.add(currentBlock);
+            for (int i = 0; i<3; i++){
+                block = queueBlocks.get(i);
+                block.moveUpAnimated2(100);
+                repaint();
+            }
+            queueBlocks.add(new TetrisBlock(490,500));
+            gameplay.start();
+            allowedToGoDown = true;
+        }
+    };
+
+
+
+
+
+
 
 
 

@@ -7,8 +7,8 @@ public class TetrisBlock {
     ArrayList<Point> points = new ArrayList<Point>();
     Color blockColor;
 
-    final int startX = 110;
-    final int startY = 30;
+    int startX = 200;
+    int startY = 30;
 
     int currentX = startX;
     int currentY = startY;
@@ -44,6 +44,22 @@ public class TetrisBlock {
         this.blockColor = blockColors[i];
     }
 
+    TetrisBlock(int startx,int starty){
+        this.startX = startx;
+        this.startY = starty;
+        this.currentX = startx;
+        this.currentY = starty;
+        Random rnd = new Random();
+        int i = rnd.nextInt(7);
+        for(Point p: tetrisBlockTypes[i]){
+            p.x = p.x*30+startX;
+            p.y = p.y*30+startY;
+            points.add(p);
+        }
+        this.blockColor = blockColors[i];
+    }
+
+
 
     /*public void TetrisBlocks(Graphics g){
         g.setColor(Color.RED);
@@ -55,25 +71,31 @@ public class TetrisBlock {
     }*/
 
 
-    protected void moveDown(){
-        this.currentY+=30;
+    protected void moveDown(int step){
+        this.currentY+=step;
         for (Point p: this.points){
-            p.y +=30;
-        }
-        System.out.println("currX: "+currentX+" currY: "+currentY);
-    }
-
-    protected void moveRight(){
-        this.currentX+=30;
-        for (Point p: this.points){
-            p.x +=30;
+            p.y +=step;
         }
     }
 
-    protected void moveLeft(){
-        this.currentX-=30;
+    protected void moveRight(int step){
+        this.currentX+=step;
         for (Point p: this.points){
-            p.x -=30;
+            p.x +=step;
+        }
+    }
+
+    protected void moveLeft(int step){
+        this.currentX-=step;
+        for (Point p: this.points){
+            p.x -=step;
+        }
+    }
+
+    protected void moveUp(int step){
+        this.currentY-=step;
+        for (Point p: this.points){
+            p.y -=step;
         }
     }
 
@@ -95,6 +117,47 @@ public class TetrisBlock {
     }
     protected void removeBlock(int x, int y){
         this.points.remove(new Point(x,y));
+    }
+
+
+    protected int getCurrentY(){
+        return this.currentY;
+    }
+    protected int getCurrentX(){
+        return this.currentX;
+    }
+
+    protected void moveUpAnimated(int y){
+        while (this.getCurrentY() > y) {
+            this.moveUp(1);
+            try{
+                Thread.sleep(5);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    protected void moveUpAnimated2(int y) {
+        for (int i = y; i > 0; i--) {
+            this.moveUp(1);
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    protected void moveLeftAnimated(int x){
+        while (this.getCurrentX() > x) {
+            this.moveLeft(1);
+            try{
+                Thread.sleep(5);
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
     }
 
 }
