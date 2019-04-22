@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5567b4a5-d730-404e-ac57-4d984f440d67" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Tetris.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tetris.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TetrisBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TetrisBlock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/TetrisGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/TetrisGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/sounds/sound1.wav" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/sounds/sound1.wav" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,10 +32,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TetrisGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="371">
-              <caret line="38" column="17" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
+            <state relative-caret-position="277">
+              <caret line="87" column="31" lean-forward="true" selection-start-line="87" selection-start-column="31" selection-end-line="87" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1169#1170#0" expanded="true" />
+                <element signature="e#1201#1202#0" expanded="true" />
                 <element signature="e#1684#1685#0" expanded="true" />
                 <element signature="e#1724#1725#0" expanded="true" />
               </folding>
@@ -222,12 +223,12 @@
       <workItem from="1555710982270" duration="962000" />
       <workItem from="1555754282525" duration="30019000" />
       <workItem from="1555875055683" duration="14785000" />
-      <workItem from="1555931160551" duration="15429000" />
+      <workItem from="1555931160551" duration="17705000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="140506000" />
+    <option name="totallyTimeSpent" value="142782000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -355,10 +356,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TetrisGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="371">
-          <caret line="38" column="17" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
+        <state relative-caret-position="277">
+          <caret line="87" column="31" lean-forward="true" selection-start-line="87" selection-start-column="31" selection-end-line="87" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1169#1170#0" expanded="true" />
+            <element signature="e#1201#1202#0" expanded="true" />
             <element signature="e#1684#1685#0" expanded="true" />
             <element signature="e#1724#1725#0" expanded="true" />
           </folding>

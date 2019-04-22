@@ -85,6 +85,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private void start(){
+        playSound("startGame");
         queueBlocks.clear();
         isRunning = true;
         textBlink.stop();
@@ -188,6 +189,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             }
         }
         score+=1;
+        playSound("sound2");
     }
 
     private void scanForFullLine(){
@@ -198,6 +200,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                     count+=1;
                     if (y==90){
                         gameOver = true;
+                        playSound("soundGameOver");
                     }
                 }
                 if (count == 12){
@@ -277,9 +280,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                     t.start();
                 } else gameplay.stop();
             } else {
+                playSound("sound1");
                 currentBlock.moveDown(30);
-                Thread sound = new Thread(playSound);
-                sound.start();
+
             }
         }
     }
@@ -425,5 +428,41 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             }
         }
     };
+
+    Runnable playSound2 = new Runnable() {
+        public void run() {
+            try
+            {
+                Clip crit = AudioSystem.getClip();
+                AudioInputStream inputStream1 = AudioSystem.getAudioInputStream(this.getClass().getResource("assets/sounds/sound2.wav"));
+                crit.open(inputStream1);
+                crit.start();
+
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void playSound(String soundName) {
+        class Sound implements Runnable {
+            String soundName;
+            Sound(String s) { soundName = s; }
+            public void run() {
+                try
+                {
+                    Clip crit = AudioSystem.getClip();
+                    AudioInputStream inputStream1 = AudioSystem.getAudioInputStream(this.getClass().getResource("assets/sounds/"+soundName+".wav"));
+                    crit.open(inputStream1);
+                    crit.start();
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        Thread t = new Thread(new Sound(soundName));
+        t.start();
+    }
 
 }
