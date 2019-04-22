@@ -1,4 +1,7 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,13 +18,12 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     private final int height;
 
     int bgX = 0,bgX1 = 0,bgX2 = 0, bgX3 = 0;
-    Image img,img2,img3,img4,img5;
+    Image img,img2,img3,img4,img5, left, right, down;
     Font font;
 
     //gameStates
     boolean isRunning = false;
     boolean gameOver = false;
-
     boolean allowedToGoMove = true;
 
 
@@ -64,12 +66,13 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             img3 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-mountains.png"));
             img4 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-trees.png"));
             img5 = ImageIO.read(getClass().getResource("assets/paralaxBG/parallax-mountain-foreground-trees.png"));
+            left = ImageIO.read(getClass().getResource("assets/arrows/left.png"));
+            right = ImageIO.read(getClass().getResource("assets/arrows/right.png"));
+            down = ImageIO.read(getClass().getResource("assets/arrows/down.png"));
         } catch (IOException|FontFormatException e){
             e.printStackTrace();
         }
     }
-
-
     public TetrisGame(int width, int height){
         this.getAssets();
         this.width = width;
@@ -112,14 +115,30 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         g.fillRect(460,120 ,getMaxQueueX()-460,520);
 
 
-        g.setColor(Color.GREEN);
-        g.setFont(getFont(40));
-        if (!gameOver && isRunning) g.drawString("Score: ".concat(Integer.toString(score)),700,260);
+        if (!gameOver && isRunning) {
+            g.setColor(new Color(255,255,255,200));
+            g.setFont(getFont(120));
+            g.drawString("SCORE: ".concat(Integer.toString(score)),700,400);
+        }
 
         if (!isRunning){
-            g.setColor(Color.GREEN);
+            g.setColor(new Color(255,255,255,200));
             g.setFont(getFont(40));
             g.drawString("Press \"P\" to play",700,350);
+
+            g.setColor(new Color(255,255,255,200));
+            g.setFont(getFont(35));
+
+            g.drawImage(left,550,500, null);
+            g.drawString("Left",600,530);
+
+            g.drawImage(down,750,500, null);
+            g.drawString("Down",800,530);
+
+            g.drawImage(right,950,500, null);
+            g.drawString("Right",1000,530);
+
+            g.drawString("Press SPACE to rotate",660,625);
         } else {
             g.setColor(new Color(255,255,255,200));
             g.setFont(getFont(40));
@@ -257,15 +276,17 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                     Thread t = new Thread(moveFromQueue);
                     t.start();
                 } else gameplay.stop();
-            } else currentBlock.moveDown(30);
+            } else {
+                currentBlock.moveDown(30);
+                Thread sound = new Thread(playSound);
+                sound.start();
+            }
         }
     }
-
 
     @Override
     public void keyTyped(KeyEvent e) {
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -287,8 +308,6 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_SPACE :
-                break;
-            case KeyEvent.VK_ENTER :
                 if (allowedToMoveHorizontal(currentBlock,true) && allowedToMoveHorizontal(currentBlock,false)) {
                     this.currentBlock.rotatePoints();
                 }
@@ -302,19 +321,15 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
 
         }
     }
-
     @Override
     public void keyReleased(KeyEvent e) {
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
     }
 
     private void background(Graphics g){
-
             g.drawImage(img,0,0,1280,720,null);
             if (this.bgX <= -1280){
                 this.bgX = 0;
@@ -336,8 +351,6 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             }
             g.drawImage(img5,bgX3,0,1280,720,null);
             g.drawImage(img5,bgX3+1280,0,1280,720,null);
-
-
     }
 
     public static Font getFont(int size) {
@@ -376,10 +389,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         }
         return max+60;
     }
-
     Runnable moveFromQueue = new Runnable() {
         public void run() {
-            System.out.println("THREAD STARTED: "+Thread.currentThread()+"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+            System.out.println("THREAD STARTED: "+Thread.currentThread()+"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"+ System.currentTimeMillis());
             gameplay.stop();
             allowedToGoMove = false;
             TetrisBlock block = queueBlocks.get(0);
@@ -399,12 +411,19 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         }
     };
 
+    Runnable playSound = new Runnable() {
+        public void run() {
+            try
+            {
+                Clip crit = AudioSystem.getClip();
+                AudioInputStream inputStream1 = AudioSystem.getAudioInputStream(this.getClass().getResource("assets/sounds/sound1.wav"));
+                crit.open(inputStream1);
+                crit.start();
 
-
-
-
-
-
-
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
 
 }

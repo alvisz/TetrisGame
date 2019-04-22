@@ -14,7 +14,6 @@ public class TetrisBlock {
     int currentY = startY;
 
 
-
     private final Color[] blockColors = {Color.GREEN,Color.BLUE,Color.RED,Color.ORANGE,Color.CYAN, Color.MAGENTA, Color.YELLOW};
     private final Point[][] tetrisBlockTypes = {
             // I-Piece
@@ -59,18 +58,6 @@ public class TetrisBlock {
         this.blockColor = blockColors[i];
     }
 
-
-
-    /*public void TetrisBlocks(Graphics g){
-        g.setColor(Color.RED);
-        for (Point p : tetrisBlockTypes[0]) {
-            System.out.println("X:"+(p.x + 10) * 10);
-            System.out.println("Y:"+(p.y + 10) * 10);
-            g.fillRect(p.x * 10+actualX, p.y * 10+actualY, 10, 10);
-        }
-    }*/
-
-
     protected void moveDown(int step){
         this.currentY+=step;
         for (Point p: this.points){
@@ -106,7 +93,36 @@ public class TetrisBlock {
         return this.blockColor;
     }
     protected void rotatePoints() {
-        for (Point p : this.points){
+        ArrayList<Point> dd = this.points;
+        rotate(dd);
+        int smallestX = 0;
+        int biggestX = 0;
+        for (Point p: dd){
+            System.out.println(p.x);
+            if (p.x < 50){
+                smallestX = 50 - p.x;
+            }
+            if (p.x > 380){
+                biggestX = p.x - 380;
+            }
+        }
+        if (smallestX > 0){
+            this.currentX+=smallestX;
+            for (Point p: dd){
+                p.x +=smallestX;
+            }
+        }
+        if (biggestX > 0){
+            this.currentX-=biggestX;
+            for (Point p: dd){
+                p.x -=biggestX;
+            }
+        }
+
+    }
+
+    private void rotate(ArrayList<Point> pList){
+        for (Point p : pList){
             p.x -= currentX;
             p.y -=currentY;
             int newx = p.y;
@@ -115,6 +131,8 @@ public class TetrisBlock {
             p.y = newy+currentY+90;
         }
     }
+
+
     protected void removeBlock(int x, int y){
         this.points.remove(new Point(x,y));
     }
@@ -129,7 +147,6 @@ public class TetrisBlock {
 
     protected void moveUpAnimated(int y){
         while (this.getCurrentY() > y) {
-            System.out.println("Move UP:"+this.getCurrentY());
             this.moveUp(1);
             try{
                 Thread.sleep(10);
@@ -140,7 +157,6 @@ public class TetrisBlock {
     }
     protected void moveUpAnimated2(int y) {
         for (int i = y; i >= 0; i--) {
-            System.out.println("INT i: "+i+" "+Thread.currentThread());
             this.moveUp(1);
             try {
                 Thread.sleep(10);
@@ -153,7 +169,6 @@ public class TetrisBlock {
 
     protected void moveLeftAnimated(int x){
         while (this.getCurrentX() > x) {
-            System.out.println("Current X: "+this.getCurrentX()+" Input X: "+x);
             this.moveLeft(1);
             try{
                 Thread.sleep(5);
