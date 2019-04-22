@@ -394,7 +394,6 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
     Runnable moveFromQueue = new Runnable() {
         public void run() {
-            System.out.println("THREAD STARTED: "+Thread.currentThread()+"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"+ System.currentTimeMillis());
             gameplay.stop();
             allowedToGoMove = false;
             TetrisBlock block = queueBlocks.get(0);

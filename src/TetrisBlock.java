@@ -98,7 +98,6 @@ public class TetrisBlock {
         int smallestX = 0;
         int biggestX = 0;
         for (Point p: dd){
-            System.out.println(p.x);
             if (p.x < 50){
                 smallestX = 50 - p.x;
             }
