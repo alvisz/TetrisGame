@@ -22,7 +22,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     boolean isRunning = false;
     boolean gameOver = false;
 
-    boolean allowedToGoDown = true;
+    boolean allowedToGoMove = true;
 
 
     ArrayList<TetrisBlock> blocks = new ArrayList<TetrisBlock>();
@@ -220,6 +220,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private boolean allowedToMoveHorizontal(TetrisBlock block, boolean side){
+        if (!allowedToGoMove) return false;
         // If side is TRUE, checks for right side else for left
         for (Point p: block.getPoints()){
             if (side){
@@ -249,7 +250,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     }
 
     private void goDown(){
-        if (allowedToGoDown){
+        if (allowedToGoMove){
             if (checkIfUnder()){
                 scanForFullLine();
                 if (!gameOver){
@@ -269,9 +270,6 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch( keyCode ) {
-            case KeyEvent.VK_UP:
-                repaint();
-                break;
             case KeyEvent.VK_DOWN:
                 goDown();
                 repaint();
@@ -297,14 +295,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
                 repaint();
                 break;
             case KeyEvent.VK_P :
-                if (!isRunning || gameOver){
+                if (!isRunning | gameOver){
                     start();
                 }
-                break;
-            case KeyEvent.VK_C :
-                Thread t = new Thread(moveFromQueue);
-                t.start();
-                repaint();
                 break;
 
         }
@@ -386,8 +379,9 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
 
     Runnable moveFromQueue = new Runnable() {
         public void run() {
-            allowedToGoDown = false;
+            System.out.println("THREAD STARTED: "+Thread.currentThread()+"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
             gameplay.stop();
+            allowedToGoMove = false;
             TetrisBlock block = queueBlocks.get(0);
             block.moveUpAnimated(30);
             block.moveLeftAnimated(200);
@@ -401,7 +395,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             }
             queueBlocks.add(new TetrisBlock(490,500));
             gameplay.start();
-            allowedToGoDown = true;
+            allowedToGoMove = true;
         }
     };
 

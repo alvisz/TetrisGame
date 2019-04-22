@@ -129,19 +129,21 @@ public class TetrisBlock {
 
     protected void moveUpAnimated(int y){
         while (this.getCurrentY() > y) {
+            System.out.println("Move UP:"+this.getCurrentY());
             this.moveUp(1);
             try{
-                Thread.sleep(5);
+                Thread.sleep(10);
             } catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
     }
     protected void moveUpAnimated2(int y) {
-        for (int i = y; i > 0; i--) {
+        for (int i = y; i >= 0; i--) {
+            System.out.println("INT i: "+i+" "+Thread.currentThread());
             this.moveUp(1);
             try {
-                Thread.sleep(5);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -151,6 +153,7 @@ public class TetrisBlock {
 
     protected void moveLeftAnimated(int x){
         while (this.getCurrentX() > x) {
+            System.out.println("Current X: "+this.getCurrentX()+" Input X: "+x);
             this.moveLeft(1);
             try{
                 Thread.sleep(5);
