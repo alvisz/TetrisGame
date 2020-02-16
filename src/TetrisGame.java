@@ -38,7 +38,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
             goDown();
         }
     });
-    // BG time laiks bija 41ms, bet baigi lago, tapec 100 :D
+
     Timer BGtime = new Timer(100, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -89,7 +89,7 @@ public class TetrisGame extends JPanel implements KeyListener, ActionListener {
         queueBlocks.clear();
         isRunning = true;
         textBlink.stop();
-        if (gameOver){
+        if (gameOver){ // resets the game
             score = 0;
             blocks.clear();
             this.currentBlock = null;
